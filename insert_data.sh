@@ -21,37 +21,37 @@ do
     #get major_id
   MAJOR_ID=$($PSQL "select major_id from majors where major='$MAJOR'")
   #if not found
-  if [[ -z $MAJOR_ID ]]  #IF MAJOR_ID NOT EMPTY MEANS NEW MAJOR_ID
-  then
-    #insert major
-    INSERT_MAJOR_RESULT=$($PSQL "insert into majors(major) values ('$MAJOR');")
-    if [[ $INSERT_MAJOR_RESULT == "INSERT 0 1" ]]  #IF SUCCESSFULLY INSERTED, ECHO INSERTED VALUES
+    if [[ -z $MAJOR_ID ]]  #IF MAJOR_ID NOT EMPTY MEANS NEW MAJOR_ID
     then
-      echo "Inserted into majors, $MAJOR"
+      #insert major
+      INSERT_MAJOR_RESULT=$($PSQL "insert into majors(major) values ('$MAJOR');")
+      if [[ $INSERT_MAJOR_RESULT == "INSERT 0 1" ]]  #IF SUCCESSFULLY INSERTED, ECHO INSERTED VALUES
+      then
+        echo "Inserted into majors, $MAJOR"
+      fi
+      #get new major_id
+      MAJOR_ID=$($PSQL "select major_id from majors where major='$MAJOR'")
     fi
-    #get new major_id
-    MAJOR_ID=$($PSQL "select major_id from majors where major='$MAJOR'")
-  fi
   #get course_id
   COURSE_ID=$($PSQL "select course_id from courses where course='$COURSE'")
   #if not found
   if [[ -z $COURSE_ID ]]  #IF COURSE_ID EMPTY THEN MEANS NEW COURSE, AVOIDS DUPES
-  then
-   #insert course
-   INSERT_COURSE_RESULT=$($PSQL "insert into courses(course) values ('$COURSE')")
-   if [[ $INSERT_COURSE_RESULT == 'INSERT 0 1' ]]
-   then
-    echo "Inserted into courses, $COURSE"
-    fi
-   #get new course_id
-   COURSE_ID=$($PSQL "select course_id from courses where course = '$COURSE'")
+    then
+     #insert course
+     INSERT_COURSE_RESULT=$($PSQL "insert into courses(course) values ('$COURSE')")
+     if [[ $INSERT_COURSE_RESULT == 'INSERT 0 1' ]]
+     then
+      echo "Inserted into courses, $COURSE"
+     fi
+     #get new course_id
+     COURSE_ID=$($PSQL "select course_id from courses where course = '$COURSE'")
   fi
   #insert into majors_courses
   INSERT_MAJORS_COURSES_RESULT=$($PSQL "insert into majors_courses(major_id, course_id) values ('$MAJOR_ID', '$COURSE_ID')")
-  if [[ $INSERT_MAJORS_COURSES_RESULT == 'INSERT 0 1' ]]
-  then
-    echo "Inserted into majors_courses, $MAJOR : $COURSE"
-  fi
+    if [[ $INSERT_MAJORS_COURSES_RESULT == 'INSERT 0 1' ]]
+    then
+      echo "Inserted into majors_courses, $MAJOR : $COURSE"
+    fi
   fi
 done
 
